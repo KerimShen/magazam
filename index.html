@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mağazam | Basit E‑Ticaret</title>
+  <style>
+    :root {
+      --bg: #0f172a;        /* slate-900 */
+      --card: #111827;      /* gray-900 */
+      --muted: #94a3b8;     /* slate-400 */
+      --text: #e5e7eb;      /* gray-200 */
+      --accent: #22d3ee;    /* cyan-400 */
+      --accent-2: #a78bfa;  /* violet-400 */
+      --radius: 16px;
+      --shadow: 0 10px 25px rgba(0,0,0,.35);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: linear-gradient(180deg, #0b1022, var(--bg));
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* Layout */
+    .container { max-width: 1200px; margin: 0 auto; padding: 16px; }
+
+    header {
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+
+    .topbar { display: flex; gap: 12px; align-items: center; justify-content: space-between; padding: 14px 0; }
+
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: .4px; }
+    .logo {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, var(--accent), var(--accent-2));
+      box-shadow: 0 6px 18px rgba(167,139,250,.45);
+      flex-shrink: 0;
+    }
+
+    .search { flex: 1; max-width: 520px; }
+    .search input {
+      width: 100%; padding: 12px 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,.08);
+      background: #0b1224; color: var(--text);
+      outline: none;
+    }
+
+    .nav { display: flex; gap: 12px; }
+    .nav a { text-decoration: none; color: var(--text); opacity: .85; padding: 8px 12px; border-radius: 10px; }
+    .nav a:hover { background: rgba(255,255,255,.06); opacity: 1; }
+
+    /* Hero */
+    .hero {
+      margin: 24px 0 12px; padding: 20px; border-radius: var(--radius);
+      background: linear-gradient(135deg, rgba(34,211,238,.15), rgba(167,139,250,.12));
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: var(--shadow);
+      display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px; align-items: center;
+    }
+    .hero h1 { margin: 0 0 8px; font-size: clamp(22px, 4vw, 36px); }
+    .hero p { margin: 0; color: var(--muted); }
+    .hero .cta { margin-top: 14px; display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn {
+      border: none; cursor: pointer; font-weight: 600; letter-spacing: .2px;
+      padding: 10px 14px; border-radius: 12px; transition: transform .12s ease, opacity .12s ease;
+    }
+    .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #0b1022; }
+    .btn:hover { transform: translateY(-1px); opacity: .95; }
+
+    .hero-visual {
+      aspect-ratio: 16 / 9; border-radius: 18px; overflow: hidden; position: relative; 
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .hero-visual img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    /* Grid */
+    .section-title { margin: 26px 4px 12px; font-size: 18px; opacity: .9; }
+
+    .grid {
+      display: grid; gap: 16px;
+      grid-template-columns: repeat(2, 1fr);
+    }
+    @media (min-width: 640px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 900px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+
+    .card {
+      background: var(--card); border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow);
+      display: flex; flex-direction: column; transition: transform .12s ease, box-shadow .12s ease;
+    }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(0,0,0,.45); }
+    .card .thumb { aspect-ratio: 1 / 1; overflow: hidden; }
+    .card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .card .body { padding: 12px; display: grid; gap: 8px; }
+    .price { font-weight: 700; }
+    .muted { color: var(--muted); font-size: 14px; }
+
+    .actions { display: flex; gap: 8px; margin-top: 4px; }
+    .btn-outline { background: transparent; color: var(--text); border: 1px solid rgba(255,255,255,.14); }
+
+    /* Footer */
+    footer { margin-top: 36px; padding: 24px 0; border-top: 1px solid rgba(255,255,255,.08); color: var(--muted); }
+    footer small { opacity: .9; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <span>Mağazam</span>
+      </div>
+      <div class="search">
+        <input type="search" placeholder="Ürün ara (çalışma yok, görsel)" aria-label="Ürün ara" />
+      </div>
+      <nav class="nav" aria-label="Ana menü">
+        <a href="#">Yeni</a>
+        <a href="#">Erkek</a>
+        <a href="#">Kadın</a>
+        <a href="#">İndirim</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div>
+        <h1>Basit E‑Ticaret Şablonu</h1>
+        <p>HTML + CSS ile tek sayfa. Gerçek sepet yok; görünüm ve düzen öğrenmek için idealdir.</p>
+        <div class="cta">
+          <button class="btn btn-primary">Çok Satanlar</button>
+          <button class="btn btn-outline">Yeni Koleksiyon</button>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <img src="https://picsum.photos/id/1005/900/600" alt="Mağaza görseli" />
+      </div>
+    </section>
+
+    <h2 class="section-title">Öne Çıkan Ürünler</h2>
+    <section class="grid">
+      <!-- Kart 1 -->
+      <article class="card">
+        <div class="thumb"><img src="https://picsum.photos/id/1062/600/600" alt="Ürün" /></div>
+        <div class="body">
+          <strong>Minimal Sırt Çantası</strong>
+          <span class="muted">Dayanıklı, günlük kullanım</span>
+          <span class="price">₺449</span>
+          <div class="actions">
+            <button class="btn btn-primary">Sepete Ekle</button>
+            <button class="btn btn-outline">İncele</button>
+          </div>
+        </div>
+      </article>
+      <!-- Kart 2 -->
+      <article class="card">
+        <div class="thumb"><img src="https://picsum.photos/id/29/600/600" alt="Ürün" /></div>
+        <div class="body">
+          <strong>Şık Güneş Gözlüğü</strong>
+          <span class="muted">UV400 koruma</span>
+          <span class="price">₺299</span>
+          <div class="actions">
+            <button class="btn btn-primary">Sepete Ekle</button>
+            <button class="btn btn-outline">İncele</button>
+          </div>
+        </div>
+      </article>
+      <!-- Kart 3 -->
+      <article class="card">
+        <div class="thumb"><img src="https://picsum.photos/id/1080/600/600" alt="Ürün" /></div>
+        <div class="body">
+          <strong>Konforlu Sneaker</strong>
+          <span class="muted">Nefes alan kumaş</span>
+          <span class="price">₺799</span>
+          <div class="actions">
+            <button class="btn btn-primary">Sepete Ekle</button>
+            <button class="btn btn-outline">İncele</button>
+          </div>
+        </div>
+      </article>
+      <!-- Kart 4 -->
+      <article class="card">
+        <div class="thumb"><img src="https://picsum.photos/id/1011/600/600" alt="Ürün" /></div>
+        <div class="body">
+          <strong>Klasik Saat</strong>
+          <span class="muted">Suya dayanıklı</span>
+          <span class="price">₺1.249</span>
+          <div class="actions">
+            <button class="btn btn-primary">Sepete Ekle</button>
+            <button class="btn btn-outline">İncele</button>
+          </div>
+        </div>
+      </article>
+      <!-- Kart 5 -->
+      <article class="card">
+        <div class="thumb"><img src="https://picsum.photos/id/1019/600/600" alt="Ürün" /></div>
+        <div class="body">
+          <strong>Oversize T‑Shirt</strong>
+          <span class="muted">%100 pamuk</span>
+          <span class="price">₺199</span>
+          <div class="actions">
+            <button class="btn btn-primary">Sepete Ekle</button>
+            <button class="btn btn-outline">İncele</button>
+          </div>
+        </div>
+      </article>
+      <!-- Kart 6 -->
+      <article class="card">
+        <div class="thumb"><img src="https://picsum.photos/id/1027/600/600" alt="Ürün" /></div>
+        <div class="body">
+          <strong>Minimal Cüzdan</strong>
+          <span class="muted">Hakiki deri</span>
+          <span class="price">₺349</span>
+          <div class="actions">
+            <button class="btn btn-primary">Sepete Ekle</button>
+            <button class="btn btn-outline">İncele</button>
+          </div>
+        </div>
+      </article>
+      <!-- Kart 7 -->
+      <article class="card">
+        <div class="thumb"><img src="https://picsum.photos/id/103/600/600" alt="Ürün" /></div>
+        <div class="body">
+          <strong>Spor Kulaklık</strong>
+          <span class="muted">12 saat pil</span>
+          <span class="price">₺549</span>
+          <div class="actions">
+            <button class="btn btn-primary">Sepete Ekle</button>
+            <button class="btn btn-outline">İncele</button>
+          </div>
+        </div>
+      </article>
+      <!-- Kart 8 -->
+      <article class="card">
+        <div class="thumb"><img src="https://picsum.photos/id/433/600/600" alt="Ürün" /></div>
+        <div class="body">
+          <strong>Şarjlı El Isıtıcı</strong>
+          <span class="muted">Kışa hazır</span>
+          <span class="price">₺259</span>
+          <div class="actions">
+            <button class="btn btn-primary">Sepete Ekle</button>
+            <button class="btn btn-outline">İncele</button>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <footer>
+      <div class="container">
+        <small>© 2025 Mağazam — Bu sayfa eğitim amaçlıdır. Gerçek ödeme/sepet yok.</small>
+      </div>
+    </footer>
+  </main>
+</body>
+</html>
