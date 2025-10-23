@@ -34,3 +34,260 @@
     .actions{display:flex;gap:8px;flex-wrap:wrap}
     .btn{border:none;cursor:pointer;font-weight:700;letter-spacing:.2px;padding:10px 14px;border-radius:12px;transition:transform .12s ease,opacity .12s ease}
     .btn:hover{transform:translateY(-1px);opacity:.95}
+    .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#0b1022}
+    .btn-outline{background:transparent;color:var(--text);border:1px solid rgba(255,255,255,.14)}
+
+    .section-title{margin:18px 4px 10px;font-size:18px;opacity:.9}
+    .grid{display:grid;gap:16px;grid-template-columns:repeat(2,1fr)}
+    @media(min-width:640px){.grid{grid-template-columns:repeat(3,1fr)}}
+    @media(min-width:900px){.grid{grid-template-columns:repeat(4,1fr)}}
+
+    .card{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;transition:transform .12s ease,box-shadow .12s ease}
+    .card:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(0,0,0,.45)}
+    .thumb{aspect-ratio:4/3;overflow:hidden}
+    .card img{width:100%;height:100%;object-fit:cover;display:block}
+    .body{padding:12px;display:grid;gap:8px}
+    .price{font-weight:800}
+    .muted{color:var(--muted);font-size:14px}
+    .chips{display:flex;gap:6px;flex-wrap:wrap}
+    .chip{font-size:12px;padding:6px 8px;border-radius:999px;background:var(--chip);border:1px solid var(--chip-bd);color:#cbd5e1}
+
+    footer{margin:32px 0 12px;padding:24px 0;border-top:1px solid rgba(255,255,255,.08);color:var(--muted)}
+
+    /* Modal */
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:16px}
+    .modal.active{display:flex}
+    .modal-card{max-width:860px;width:100%;background:#0b1224;border:1px solid rgba(255,255,255,.10);border-radius:16px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+    .modal-top{display:grid;grid-template-columns:1.2fr 1fr}
+    .modal-top img{width:100%;height:100%;object-fit:cover}
+    .modal-body{padding:16px}
+    .modal-actions{display:flex;gap:8px;margin-top:10px}
+  </style>
+</head>
+<body>
+<header>
+  <div class="container topbar">
+    <div class="brand"><div class="logo" aria-hidden="true"></div><span>KerimOto</span></div>
+    <nav class="nav" aria-label="Ana menü">
+      <a href="#">İlanlar</a>
+      <a href="#">Sat</a>
+      <a href="#">Hakkımızda</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="hero">
+    <div>
+      <h1>KerimOto — Araba İlanları</h1>
+      <p>HTML + CSS + ufak JS ile filtrelenebilir ilan sayfası. Öğrenme ve demo amaçlı.</p>
+    </div>
+    <div class="hero-visual">
+      <!-- İlk görsel CLS -->
+      <img src="arabalar/CLS.jpg" alt="Mercedes CLS" />
+    </div>
+  </section>
+
+  <section class="filters" id="filters">
+    <div class="row">
+      <div>
+        <label for="q">Kelime arama</label>
+        <input id="q" type="search" placeholder="Örn: Corolla, dizel, otomatik" />
+      </div>
+      <div>
+        <label for="brand">Marka</label>
+        <select id="brand">
+          <option value="">Hepsi</option>
+        </select>
+      </div>
+      <div>
+        <label for="minPrice">Min ₺</label>
+        <input id="minPrice" type="number" inputmode="numeric" placeholder="0" />
+      </div>
+      <div>
+        <label for="maxPrice">Max ₺</label>
+        <input id="maxPrice" type="number" inputmode="numeric" placeholder="5000000" />
+      </div>
+      <div>
+        <label for="year">Yıl (min)</label>
+        <select id="year">
+          <option value="">Hepsi</option>
+        </select>
+      </div>
+      <div>
+        <label for="sort">Sırala</label>
+        <select id="sort">
+          <option value="new">En yeni</option>
+          <option value="price-asc">Fiyat (Artan)</option>
+          <option value="price-desc">Fiyat (Azalan)</option>
+          <option value="year-desc">Yıl (Yeni→Eski)</option>
+          <option value="km-asc">KM (Az→Çok)</option>
+        </select>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" id="apply">Filtrele</button>
+      <button class="btn btn-outline" id="reset">Sıfırla</button>
+    </div>
+  </section>
+
+  <h2 class="section-title">Güncel İlanlar</h2>
+  <section class="grid" id="list"></section>
+
+  <footer>
+    <small>© 2025 KerimOto — Eğitim amaçlı demo. Gerçek satış/ödeme yok.</small>
+  </footer>
+</main>
+
+<!-- Detay Modalı -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal-card">
+    <div class="modal-top">
+      <img id="mImg" alt="Araç görseli"/>
+      <div class="modal-body">
+        <h3 id="mTitle" style="margin-top:0"></h3>
+        <p id="mDesc" class="muted"></p>
+        <div class="chips" id="mChips"></div>
+        <div class="modal-actions">
+          <button class="btn btn-primary" id="mCall">Satıcıyı Ara</button>
+          <button class="btn btn-outline" id="mClose">Kapat</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // İLANLAR (senin foto adlarınla)
+  const cars = [
+    {id:1, brand:'Mercedes',   model:'CLS350cdi 3.0 V6', year:2011, km:230000, price:2500000, fuel:'Dizel',              gear:'Otomatik',
+     img:'arabalar/CLS.jpg',            desc:'Stage2 350+HP.'},
+
+    {id:2, brand:'Hyundai',    model:'I30 1.4',          year:2008, km:181000, price:765000,  fuel:'Benzin',            gear:'Manuel',
+     img:'arabalar/i30.jpg',            desc:'Hatassız, değişensiz. Ekstra kış lastikleri hediye.'},
+
+    {id:3, brand:'Hyundai',    model:'Tucson 1.6',       year:2018, km:120000, price:1300000, fuel:'Benzin',            gear:'Otomatik',
+     img:'arabalar/Tucson.jpg',         desc:'Sunroof, kazasız boyasız, ilk sahibinden.'},
+
+    {id:4, brand:'Renault',    model:'Clio 1.5 dCi',     year:2016, km:120000, price:495000,  fuel:'Dizel',             gear:'Manuel',
+     img:'arabalar/Clio.jpg',           desc:'Ekonomik yakıt, şehir içi ideal.'},
+
+    {id:5, brand:'Volkswagen', model:'Passat 1.5 TSI',   year:2020, km:85000,  price:1700000, fuel:'Benzin',            gear:'Otomatik',
+     img:'arabalar/Passat.jpg',         desc:'Temiz kullanılmış, düzenli bakımlı.'},
+
+    {id:6, brand:'Byd',        model:'Seal',             year:2025, km:5500,   price:2300000, fuel:'Elektrik',          gear:'Otomatik',
+     img:'arabalar/Byd.jpg',            desc:'Yeni nesil tam elektrikli sedan.'},
+
+    {id:7, brand:'Toyota',     model:'Corolla Cross 1.8',year:2023, km:50000,  price:2000000, fuel:'Benzin + Elektrik', gear:'Otomatik',
+     img:'arabalar/CorollaCross.jpg',   desc:'Hibrit, düşük tüketim, aile aracı.'},
+
+    {id:8, brand:'Fiat',       model:'Egea 1.3 Multijet',year:2018, km:135000, price:575000,  fuel:'Dizel',             gear:'Manuel',
+     img:'arabalar/812Ferrari.jpg',     desc:'Uygun maliyetli, bakımları yeni yapıldı.'}
+  ];
+
+  const $ = sel => document.querySelector(sel);
+  const listEl = $('#list');
+  const qEl = $('#q');
+  const brandEl = $('#brand');
+  const minEl = $('#minPrice');
+  const maxEl = $('#maxPrice');
+  const yearEl = $('#year');
+  const sortEl = $('#sort');
+
+  // Dinamik marka ve yıl seçenekleri
+  const brands = [...new Set(cars.map(c=>c.brand))].sort();
+  brands.forEach(b=>{ const o=document.createElement('option'); o.value=o.textContent=b; brandEl.appendChild(o); });
+  const years = [...new Set(cars.map(c=>c.year))].sort((a,b)=>b-a);
+  years.forEach(y=>{ const o=document.createElement('option'); o.value=o.textContent=y; yearEl.appendChild(o); });
+
+  function formatPrice(n){return n.toLocaleString('tr-TR',{style:'currency',currency:'TRY',maximumFractionDigits:0});}
+
+  const fuelIcon = f => {
+    const t = f.toLowerCase();
+    if (t.includes('elektrik') && t.includes('benzin')) return '♻️ ' + f;   // hibrit
+    if (t.includes('elektrik')) return '⚡ ' + f;                            // elektrik
+    return '⛽ ' + f;                                                         // benzin/dizel
+  };
+
+  function render(items){
+    listEl.innerHTML = items.map(c=>`
+      <article class="card">
+        <div class="thumb"><img src="${c.img}" alt="${c.brand} ${c.model}" loading="lazy" onerror="this.onerror=null;this.src='https://source.unsplash.com/800x600/?${encodeURIComponent(c.brand+' car')}'"/></div>
+        <div class="body">
+          <strong>${c.brand} ${c.model}</strong>
+          <span class="muted">${c.year} • ${c.km.toLocaleString('tr-TR')} km • ${c.fuel} • ${c.gear}</span>
+          <span class="price">${formatPrice(c.price)}</span>
+          <div class="chips">
+            <span class="chip">${c.year} model</span>
+            <span class="chip">${fuelIcon(c.fuel)}</span>
+            <span class="chip">${c.gear}</span>
+          </div>
+          <div class="actions">
+            <button class="btn btn-primary" data-id="${c.id}" onclick="openModal(${c.id})">İlanı Gör</button>
+            <button class="btn btn-outline" onclick="navigator.clipboard.writeText(window.location.href)">Linki Kopyala</button>
+          </div>
+        </div>
+      </article>
+    `).join('');
+  }
+
+  function applyFilters(){
+    const q = qEl.value.trim().toLowerCase();
+    const b = brandEl.value;
+    const min = +minEl.value || 0;
+    const max = +maxEl.value || Infinity;
+    const y = +yearEl.value || 0;
+
+    let res = cars.filter(c=>
+      (b? c.brand===b : true) &&
+      c.price>=min && c.price<=max &&
+      (y? c.year>=y : true) &&
+      (q? (c.brand+" "+c.model+" "+c.fuel+" "+c.gear).toLowerCase().includes(q) : true)
+    );
+
+    switch(sortEl.value){
+      case 'price-asc': res.sort((a,b)=>a.price-b.price); break;
+      case 'price-desc': res.sort((a,b)=>b.price-a.price); break;
+      case 'year-desc': res.sort((a,b)=>b.year-a-year); break;
+      case 'km-asc': res.sort((a,b)=>a.km-b.km); break;
+      default: res.sort((a,b)=>b.id-a.id); // en yeni eklenen
+    }
+
+    render(res);
+  }
+
+  $('#apply').addEventListener('click', applyFilters);
+  $('#reset').addEventListener('click', ()=>{
+    qEl.value=''; brandEl.value=''; minEl.value=''; maxEl.value=''; yearEl.value=''; sortEl.value='new';
+    render(cars);
+  });
+
+  // Modal
+  const modal = $('#modal');
+  const mImg = $('#mImg');
+  const mTitle = $('#mTitle');
+  const mDesc = $('#mDesc');
+  const mChips = $('#mChips');
+  $('#mClose').addEventListener('click', closeModal);
+  modal.addEventListener('click', e=>{ if(e.target===modal) closeModal(); });
+  function openModal(id){
+    const c = cars.find(x=>x.id===id); if(!c) return;
+    mImg.src = c.img; mImg.alt = c.brand+" "+c.model;
+    mTitle.textContent = `${c.brand} ${c.model} — ${formatPrice(c.price)}`;
+    mDesc.textContent = c.desc;
+    mChips.innerHTML = `
+      <span class="chip">${c.year}</span>
+      <span class="chip">${c.km.toLocaleString('tr-TR')} km</span>
+      <span class="chip">${fuelIcon(c.fuel)}</span>
+      <span class="chip">${c.gear}</span>
+    `;
+    document.getElementById('mCall').onclick=()=>alert('Demo: Satıcı telefonu gizli.');
+    modal.classList.add('active'); modal.setAttribute('aria-hidden','false');
+  }
+  function closeModal(){ modal.classList.remove('active'); modal.setAttribute('aria-hidden','true'); }
+
+  // İlk render
+  render(cars);
+</script>
+</body>
+</html>
