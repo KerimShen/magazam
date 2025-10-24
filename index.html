@@ -79,6 +79,9 @@
     .modal-top img{width:100%;height:100%;object-fit:cover}
     .modal-body{padding:16px}
     .modal-actions{display:flex;gap:8px;margin-top:10px}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form-grid input,.form-grid select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.10);background:#0b1224;color:var(--text)}
+@media (max-width:640px){ .form-grid{grid-template-columns:1fr} }
   </style>
 </head>
 <body>
@@ -86,10 +89,11 @@
   <div class="container topbar">
     <div class="brand"><div class="logo" aria-hidden="true"></div><span>KerimOto</span></div>
     <nav class="nav" aria-label="Ana menü">
-      <a href="#">İlanlar</a>
-      <a href="#">Sat</a>
-      <a href="#">Hakkımızda</a>
-    </nav>
+  <a href="#list">İlanlar</a>
+  <a href="#" id="openSell">Sat</a>
+  <a href="#" id="openAdmin">Admin</a>
+</nav>
+
   </div>
 </header>
 
@@ -189,7 +193,7 @@
     {id:4, brand:'Renault',    model:'Clio 1.5 dCi',     year:2016, km:120000, price:495000,  fuel:'Dizel',             gear:'Manuel',
      img:'Clio.jpg',           desc:'Ekonomik yakıt, şehir içi ideal.'},
 
-    {id:5, brand:'Volkswagen', model:'Passat 1.5 TSI',   year:2020, km:85000,  price:1700000, fuel:'Benzin',            gear:'Otomatik',
+    {id:5, brand:'Volkswagen', model:'Passat 1.5 TSI',   year:2023, km:85000,  price:1700000, fuel:'Benzin',            gear:'Otomatik',
      img:'Passat.jpg',         desc:'Temiz kullanılmış, düzenli bakımlı.'},
 
     {id:6, brand:'Byd',        model:'Seal',             year:2025, km:5500,   price:2300000, fuel:'Elektrik',          gear:'Otomatik',
@@ -305,9 +309,103 @@
 
   // İlk render
   render(cars);
+  /* ===== Yerel depo yardımcıları ===== */
+const LS_KEY = 'kerimoto_pending';
+const getPending = () => JSON.parse(localStorage.getItem(LS_KEY) || '[]');
+const setPending = (arr) => localStorage.setItem(LS_KEY, JSON.stringify(arr));
+
+/* ===== SAT (İlan Ver) modalı ===== */
+const sellModal = document.getElementById('sellModal');
+const openSell = document.getElementById('openSell');
+const sellClose = document.getElementById('sellClose');
+openSell.addEventListener('click', e=>{ e.preventDefault(); sellModal.classList.add('active'); });
+sellClose.addEventListener('click', ()=> sellModal.classList.remove('active'));
+sellModal.addEventListener('click', e=>{ if(e.target===sellModal) sellModal.classList.remove('active'); });
+
+document.getElementById('sellForm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const fd = new FormData(e.target);
+
+  // Görsel: URL varsa onu kullan; yoksa dosyayı DataURL’e çevir
+  let img = (fd.get('imgUrl')||'').trim();
+  const file = document.getElementById('imgFile').files[0];
+  if(!img && file){
+    img = await new Promise(res=>{
+      const r = new FileReader(); r.onload = ()=>res(r.result); r.readAsDataURL(file);
+    });
+  }
+  if(!img){ alert('Lütfen fotoğraf URL girin veya dosya seçin.'); return; }
+
+  const item = {
+    tempId: Date.now(),
+    brand: fd.get('brand').trim(),
+    model: fd.get('model').trim(),
+    year: +fd.get('year') || 0,
+    km: +fd.get('km') || 0,
+    price: +fd.get('price') || 0,
+    fuel: fd.get('fuel'),
+    gear: fd.get('gear'),
+    img,
+    desc: (fd.get('desc')||'').trim()
+  };
+
+  const list = getPending();
+  list.push(item); setPending(list);
+
+  e.target.reset(); document.getElementById('imgFile').value='';
+  sellModal.classList.remove('active');
+  alert('Başvurun alındı! Onaydan sonra yayına alınacak.');
+});
+
+/* ===== ADMIN (onay) modalı ===== */
+const ADMIN_PIN = '2468'; // istersen değiştir
+const adminModal = document.getElementById('adminModal');
+const pendingList = document.getElementById('pendingList');
+document.getElementById('openAdmin').addEventListener('click', (e)=>{
+  e.preventDefault();
+  const pin = prompt('Admin PIN:');
+  if(pin !== ADMIN_PIN) return alert('Yanlış PIN');
+  renderPending(); adminModal.classList.add('active');
+});
+document.getElementById('adminClose').addEventListener('click', ()=> adminModal.classList.remove('active'));
+adminModal.addEventListener('click', e=>{ if(e.target===adminModal) adminModal.classList.remove('active'); });
+
+function renderPending(){
+  const data = getPending();
+  if(!data.length){ pendingList.innerHTML = '<p class="muted">Onay bekleyen ilan yok.</p>'; return; }
+  pendingList.innerHTML = data.map((c,i)=>`
+    <article class="card">
+      <div class="thumb" style="max-height:220px"><img src="${c.img}" alt="${c.brand} ${c.model}" style="width:100%;height:100%;object-fit:cover"></div>
+      <div class="body">
+        <strong>${c.brand} ${c.model}</strong>
+        <span class="muted">${c.year} • ${c.km.toLocaleString('tr-TR')} km • ${c.fuel} • ${c.gear}</span>
+        <span class="price">${formatPrice(c.price)}</span>
+        <p class="muted">${c.desc||''}</p>
+        <div class="actions">
+          <button class="btn btn-primary" onclick="approvePending(${i})">Onayla ve Yayınla</button>
+          <button class="btn btn-outline" onclick="rejectPending(${i})">Sil</button>
+        </div>
+      </div>
+    </article>
+  `).join('');
+}
+window.approvePending = (i)=>{
+  const list = getPending();
+  const c = list[i]; if(!c) return;
+  const newId = (cars.reduce((m,x)=>Math.max(m,x.id),0) || 0) + 1;
+  cars.push({ id:newId, brand:c.brand, model:c.model, year:c.year, km:c.km, price:c.price, fuel:c.fuel, gear:c.gear, img:c.img, desc:c.desc });
+  render(cars);
+  list.splice(i,1); setPending(list); renderPending();
+  alert('İlan yayınlandı!');
+};
+window.rejectPending = (i)=>{
+  const list = getPending(); list.splice(i,1); setPending(list); renderPending();
+};
+
 </script>
 </body>
 </html>
+
 
 
 
