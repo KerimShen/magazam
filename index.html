@@ -25,24 +25,12 @@
     .hero h1{margin:0 0 8px;font-size:clamp(22px,4vw,36px)}
     .hero p{margin:0;color:var(--muted)}
     .hero-visual{
-  height: 320px;
-  border-radius: 18px;
-  overflow: hidden;
-  border: 1px solid rgba(255,255,255,.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #0b1224;
-}
-.hero-visual img{
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-  display: block;
-}
-
+      height:320px;border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.08);
+      display:flex;align-items:center;justify-content:center;background:#0b1224;
+    }
+    .hero-visual img{
+      max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;
+    }
 
     .filters{margin:12px 0 8px;padding:12px;border-radius:14px;background:rgba(2,6,23,.45);border:1px solid rgba(255,255,255,.08);display:grid;gap:10px}
     .filters .row{display:grid;gap:10px;grid-template-columns:1.2fr repeat(4,1fr) 1fr}
@@ -79,9 +67,18 @@
     .modal-top img{width:100%;height:100%;object-fit:cover}
     .modal-body{padding:16px}
     .modal-actions{display:flex;gap:8px;margin-top:10px}
+
     .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.form-grid input,.form-grid select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.10);background:#0b1224;color:var(--text)}
-@media (max-width:640px){ .form-grid{grid-template-columns:1fr} }
+    .form-grid input,.form-grid select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.10);background:#0b1224;color:var(--text)}
+
+    @media (max-width:640px){
+      .form-grid{grid-template-columns:1fr}
+      .hero{grid-template-columns:1fr;gap:12px;padding:16px}
+      .hero-visual{height:220px}
+      .filters{padding:10px}
+      .filters .row{grid-template-columns:1fr;gap:8px}
+      .grid{grid-template-columns:1fr}
+    }
   </style>
 </head>
 <body>
@@ -89,11 +86,10 @@
   <div class="container topbar">
     <div class="brand"><div class="logo" aria-hidden="true"></div><span>KerimOto</span></div>
     <nav class="nav" aria-label="Ana menü">
-  <a href="#list">İlanlar</a>
-  <a href="#" id="openSell">Sat</a>
-  <a href="#" id="openAdmin">Admin</a>
-</nav>
-
+      <a href="#list">İlanlar</a>
+      <a href="#" id="openSell">Sat</a>
+      <a href="#" id="openAdmin">Admin</a>
+    </nav>
   </div>
 </header>
 
@@ -104,7 +100,6 @@
       <p> Araç alım satım sayfası. Öğrenme ve demo amaçlı.</p>
     </div>
     <div class="hero-visual">
-      <!-- İlk görsel CLS -->
       <img src="CLS.jpg" alt="Mercedes CLS" />
     </div>
   </section>
@@ -117,9 +112,7 @@
       </div>
       <div>
         <label for="brand">Marka</label>
-        <select id="brand">
-          <option value="">Hepsi</option>
-        </select>
+        <select id="brand"><option value="">Hepsi</option></select>
       </div>
       <div>
         <label for="minPrice">Min ₺</label>
@@ -131,9 +124,7 @@
       </div>
       <div>
         <label for="year">Yıl (min)</label>
-        <select id="year">
-          <option value="">Hepsi</option>
-        </select>
+        <select id="year"><option value="">Hepsi</option></select>
       </div>
       <div>
         <label for="sort">Sırala</label>
@@ -178,32 +169,70 @@
   </div>
 </div>
 
+<!-- İlan Ver (Sat) Modalı -->
+<div class="modal" id="sellModal" aria-hidden="true">
+  <div class="modal-card">
+    <div class="modal-body">
+      <h3 style="margin:0 0 10px">İlan Ver</h3>
+      <p class="muted" style="margin:0 0 10px">Formu doldur; onay sonrası yayına alınır.</p>
+
+      <form id="sellForm">
+        <div class="form-grid">
+          <input name="brand" required placeholder="Marka (Örn: Mercedes)" />
+          <input name="model" required placeholder="Model (Örn: CLS 350cdi)" />
+          <input name="year"  required type="number" placeholder="Yıl (Örn: 2011)" />
+          <input name="km"    required type="number" placeholder="KM (Örn: 230000)" />
+          <input name="price" required type="number" placeholder="Fiyat ₺ (Örn: 2500000)" />
+          <select name="fuel" required>
+            <option value="" hidden>Yakıt</option>
+            <option>Benzin</option><option>Dizel</option>
+            <option>Elektrik</option><option>Benzin + Elektrik</option>
+          </select>
+          <select name="gear" required>
+            <option value="" hidden>Vites</option>
+            <option>Otomatik</option><option>Manuel</option>
+          </select>
+          <input name="imgUrl" placeholder="Fotoğraf URL (opsiyonel)" />
+        </div>
+
+        <div class="muted" style="margin:8px 0">veya foto yükle:</div>
+        <input id="imgFile" type="file" accept="image/*" />
+
+        <textarea name="desc" rows="3" placeholder="Açıklama" style="width:100%;margin-top:10px"></textarea>
+
+        <div class="actions" style="margin-top:10px">
+          <button class="btn btn-primary" type="submit">Başvuruyu Gönder</button>
+          <button class="btn btn-outline" type="button" id="sellClose">Kapat</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Admin Modal (Onay Bekleyenler) -->
+<div class="modal" id="adminModal" aria-hidden="true">
+  <div class="modal-card">
+    <div class="modal-body">
+      <h3 style="margin:0 0 10px">Admin — Onay Bekleyen İlanlar</h3>
+      <div id="pendingList" class="grid" style="grid-template-columns:1fr;gap:10px"></div>
+      <div class="actions" style="margin-top:10px">
+        <button class="btn btn-outline" id="adminClose">Kapat</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
-  // İLANLAR (senin foto adlarınla)
+  // İLANLAR
   const cars = [
-    {id:1, brand:'Mercedes',   model:'CLS350cdi 3.0 V6', year:2011, km:230000, price:2500000, fuel:'Dizel',              gear:'Otomatik',
-     img:'CLS.jpg',            desc:'Stage2 350+HP.'},
-
-    {id:2, brand:'Hyundai',    model:'I30 1.4',          year:2008, km:181000, price:765000,  fuel:'Benzin',            gear:'Manuel',
-     img:'i30.jpg',            desc:'Hatassız, değişensiz. Ekstra kış lastikleri hediye.'},
-
-    {id:3, brand:'Hyundai',    model:'Tucson 1.6',       year:2018, km:120000, price:1300000, fuel:'Benzin',            gear:'Otomatik',
-     img:'Tucson.jpg',         desc:'Sunroof, kazasız boyasız, ilk sahibinden.'},
-
-    {id:4, brand:'Renault',    model:'Clio 1.5 dCi',     year:2016, km:120000, price:495000,  fuel:'Dizel',             gear:'Manuel',
-     img:'Clio.jpg',           desc:'Ekonomik yakıt, şehir içi ideal.'},
-
-    {id:5, brand:'Volkswagen', model:'Passat 1.5 TSI',   year:2023, km:85000,  price:1700000, fuel:'Benzin',            gear:'Otomatik',
-     img:'Passat.jpg',         desc:'Temiz kullanılmış, düzenli bakımlı.'},
-
-    {id:6, brand:'Byd',        model:'Seal',             year:2025, km:5500,   price:2300000, fuel:'Elektrik',          gear:'Otomatik',
-     img:'Byd.jpg',            desc:'Yeni nesil tam elektrikli sedan.'},
-
-    {id:7, brand:'Toyota',     model:'Corolla Cross 1.8',year:2023, km:50000,  price:2000000, fuel:'Benzin + Elektrik', gear:'Otomatik',
-     img:'CorollaCross.jpg',   desc:'Hibrit, düşük tüketim, aile aracı.'},
-
-    {id:8, brand:'Fiat',       model:'Egea 1.3 Multijet',year:2018, km:135000, price:575000,  fuel:'Dizel',             gear:'Manuel',
-     img:'812Ferrari.jpg',     desc:'Uygun maliyetli, bakımları yeni yapıldı.'}
+    {id:1, brand:'Mercedes',   model:'CLS350cdi 3.0 V6', year:2011, km:230000, price:2500000, fuel:'Dizel',              gear:'Otomatik', img:'CLS.jpg',            desc:'Stage2 350+HP.'},
+    {id:2, brand:'Hyundai',    model:'I30 1.4',          year:2008, km:181000, price:765000,  fuel:'Benzin',            gear:'Manuel',   img:'i30.jpg',            desc:'Hatassız, değişensiz. Ekstra kış lastikleri hediye.'},
+    {id:3, brand:'Hyundai',    model:'Tucson 1.6',       year:2018, km:120000, price:1300000, fuel:'Benzin',            gear:'Otomatik', img:'Tucson.jpg',         desc:'Sunroof, kazasız boyasız, ilk sahibinden.'},
+    {id:4, brand:'Renault',    model:'Clio 1.5 dCi',     year:2016, km:120000, price:495000,  fuel:'Dizel',             gear:'Manuel',   img:'Clio.jpg',           desc:'Ekonomik yakıt, şehir içi ideal.'},
+    {id:5, brand:'Volkswagen', model:'Passat 1.5 TSI',   year:2023, km:85000,  price:1700000, fuel:'Benzin',            gear:'Otomatik', img:'Passat.jpg',         desc:'Temiz kullanılmış, düzenli bakımlı.'},
+    {id:6, brand:'Byd',        model:'Seal',             year:2025, km:5500,   price:2300000, fuel:'Elektrik',          gear:'Otomatik', img:'Byd.jpg',            desc:'Yeni nesil tam elektrikli sedan.'},
+    {id:7, brand:'Toyota',     model:'Corolla Cross 1.8',year:2023, km:50000,  price:2000000, fuel:'Benzin + Elektrik', gear:'Otomatik', img:'CorollaCross.jpg',   desc:'Hibrit, düşük tüketim, aile aracı.'},
+    {id:8, brand:'Fiat',       model:'Egea 1.3 Multijet',year:2018, km:135000, price:575000,  fuel:'Dizel',             gear:'Manuel',   img:'812Ferrari.jpg',     desc:'Uygun maliyetli, bakımları yeni yapıldı.'}
   ];
 
   const $ = sel => document.querySelector(sel);
@@ -222,12 +251,11 @@
   years.forEach(y=>{ const o=document.createElement('option'); o.value=o.textContent=y; yearEl.appendChild(o); });
 
   function formatPrice(n){return n.toLocaleString('tr-TR',{style:'currency',currency:'TRY',maximumFractionDigits:0});}
-
   const fuelIcon = f => {
     const t = f.toLowerCase();
-    if (t.includes('elektrik') && t.includes('benzin')) return '♻️ ' + f;   // hibrit
-    if (t.includes('elektrik')) return '⚡ ' + f;                            // elektrik
-    return '⛽ ' + f;                                                         // benzin/dizel
+    if (t.includes('elektrik') && t.includes('benzin')) return '♻️ ' + f;
+    if (t.includes('elektrik')) return '⚡ ' + f;
+    return '⛽ ' + f;
   };
 
   function render(items){
@@ -244,7 +272,7 @@
             <span class="chip">${c.gear}</span>
           </div>
           <div class="actions">
-            <button class="btn btn-primary" data-id="${c.id}" onclick="openModal(${c.id})">İlanı Gör</button>
+            <button class="btn btn-primary" onclick="openModal(${c.id})">İlanı Gör</button>
             <button class="btn btn-outline" onclick="navigator.clipboard.writeText(window.location.href)">Linki Kopyala</button>
           </div>
         </div>
@@ -269,21 +297,17 @@
     switch(sortEl.value){
       case 'price-asc': res.sort((a,b)=>a.price-b.price); break;
       case 'price-desc': res.sort((a,b)=>b.price-a.price); break;
-      case 'year-desc': res.sort((a,b)=>b.year-a-year); break;
+      case 'year-desc': res.sort((a,b)=> b.year - a.year ); break; /* düzeltildi */
       case 'km-asc': res.sort((a,b)=>a.km-b.km); break;
-      default: res.sort((a,b)=>b.id-a.id); // en yeni eklenen
+      default: res.sort((a,b)=>b.id-a.id);
     }
-
     render(res);
   }
 
   $('#apply').addEventListener('click', applyFilters);
-  $('#reset').addEventListener('click', ()=>{
-    qEl.value=''; brandEl.value=''; minEl.value=''; maxEl.value=''; yearEl.value=''; sortEl.value='new';
-    render(cars);
-  });
+  $('#reset').addEventListener('click', ()=>{ qEl.value=''; brandEl.value=''; minEl.value=''; maxEl.value=''; yearEl.value=''; sortEl.value='new'; render(cars); });
 
-  // Modal
+  // Detay Modal
   const modal = $('#modal');
   const mImg = $('#mImg');
   const mTitle = $('#mTitle');
@@ -295,7 +319,7 @@
     const c = cars.find(x=>x.id===id); if(!c) return;
     mImg.src = c.img; mImg.alt = c.brand+" "+c.model;
     mTitle.textContent = `${c.brand} ${c.model} — ${formatPrice(c.price)}`;
-    mDesc.textContent = c.desc;
+    mDesc.textContent = c.desc || '';
     mChips.innerHTML = `
       <span class="chip">${c.year}</span>
       <span class="chip">${c.km.toLocaleString('tr-TR')} km</span>
@@ -309,104 +333,108 @@
 
   // İlk render
   render(cars);
-  /* ===== Yerel depo yardımcıları ===== */
-const LS_KEY = 'kerimoto_pending';
-const getPending = () => JSON.parse(localStorage.getItem(LS_KEY) || '[]');
-const setPending = (arr) => localStorage.setItem(LS_KEY, JSON.stringify(arr));
 
-/* ===== SAT (İlan Ver) modalı ===== */
-const sellModal = document.getElementById('sellModal');
-const openSell = document.getElementById('openSell');
-const sellClose = document.getElementById('sellClose');
-openSell.addEventListener('click', e=>{ e.preventDefault(); sellModal.classList.add('active'); });
-sellClose.addEventListener('click', ()=> sellModal.classList.remove('active'));
-sellModal.addEventListener('click', e=>{ if(e.target===sellModal) sellModal.classList.remove('active'); });
+  /* ====== Sat & Admin ====== */
+  const LS_KEY = 'kerimoto_pending';
+  const getPending = () => JSON.parse(localStorage.getItem(LS_KEY) || '[]');
+  const setPending = (arr) => localStorage.setItem(LS_KEY, JSON.stringify(arr));
 
-document.getElementById('sellForm').addEventListener('submit', async (e)=>{
-  e.preventDefault();
-  const fd = new FormData(e.target);
+  // SAT modal
+  const sellModal = document.getElementById('sellModal');
+  const openSell  = document.getElementById('openSell');
+  const sellClose = document.getElementById('sellClose');
+  const sellForm  = document.getElementById('sellForm');
+  const imgFile   = document.getElementById('imgFile');
 
-  // Görsel: URL varsa onu kullan; yoksa dosyayı DataURL’e çevir
-  let img = (fd.get('imgUrl')||'').trim();
-  const file = document.getElementById('imgFile').files[0];
-  if(!img && file){
-    img = await new Promise(res=>{
-      const r = new FileReader(); r.onload = ()=>res(r.result); r.readAsDataURL(file);
+  if(openSell)  openSell.addEventListener('click', e=>{ e.preventDefault(); sellModal.classList.add('active'); });
+  if(sellClose) sellClose.addEventListener('click', ()=> sellModal.classList.remove('active'));
+  if(sellModal) sellModal.addEventListener('click', e=>{ if(e.target===sellModal) sellModal.classList.remove('active'); });
+
+  if(sellForm){
+    sellForm.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const fd = new FormData(sellForm);
+
+      let img = (fd.get('imgUrl')||'').trim();
+      const file = imgFile?.files?.[0];
+      if(!img && file){
+        img = await new Promise(res=>{
+          const r = new FileReader(); r.onload = ()=>res(r.result); r.readAsDataURL(file);
+        });
+      }
+      if(!img){ alert('Lütfen fotoğraf URL girin veya dosya seçin.'); return; }
+
+      const item = {
+        tempId: Date.now(),
+        brand: (fd.get('brand')||'').trim(),
+        model: (fd.get('model')||'').trim(),
+        year:  +fd.get('year') || 0,
+        km:    +fd.get('km')   || 0,
+        price: +fd.get('price')|| 0,
+        fuel:  fd.get('fuel'),
+        gear:  fd.get('gear'),
+        img,
+        desc:  (fd.get('desc')||'').trim()
+      };
+
+      const list = getPending(); list.push(item); setPending(list);
+      sellForm.reset(); if(imgFile) imgFile.value='';
+      sellModal.classList.remove('active');
+      alert('Başvurun alındı! Onaydan sonra yayına alınacak.');
     });
   }
-  if(!img){ alert('Lütfen fotoğraf URL girin veya dosya seçin.'); return; }
 
-  const item = {
-    tempId: Date.now(),
-    brand: fd.get('brand').trim(),
-    model: fd.get('model').trim(),
-    year: +fd.get('year') || 0,
-    km: +fd.get('km') || 0,
-    price: +fd.get('price') || 0,
-    fuel: fd.get('fuel'),
-    gear: fd.get('gear'),
-    img,
-    desc: (fd.get('desc')||'').trim()
-  };
+  // ADMIN modal
+  const ADMIN_PIN   = '2468';
+  const adminModal  = document.getElementById('adminModal');
+  const adminClose  = document.getElementById('adminClose');
+  const openAdmin   = document.getElementById('openAdmin');
+  const pendingList = document.getElementById('pendingList');
 
-  const list = getPending();
-  list.push(item); setPending(list);
-
-  e.target.reset(); document.getElementById('imgFile').value='';
-  sellModal.classList.remove('active');
-  alert('Başvurun alındı! Onaydan sonra yayına alınacak.');
-});
-
-/* ===== ADMIN (onay) modalı ===== */
-const ADMIN_PIN = '2468'; // istersen değiştir
-const adminModal = document.getElementById('adminModal');
-const pendingList = document.getElementById('pendingList');
-document.getElementById('openAdmin').addEventListener('click', (e)=>{
-  e.preventDefault();
-  const pin = prompt('Admin PIN:');
-  if(pin !== ADMIN_PIN) return alert('Yanlış PIN');
-  renderPending(); adminModal.classList.add('active');
-});
-document.getElementById('adminClose').addEventListener('click', ()=> adminModal.classList.remove('active'));
-adminModal.addEventListener('click', e=>{ if(e.target===adminModal) adminModal.classList.remove('active'); });
-
-function renderPending(){
-  const data = getPending();
-  if(!data.length){ pendingList.innerHTML = '<p class="muted">Onay bekleyen ilan yok.</p>'; return; }
-  pendingList.innerHTML = data.map((c,i)=>`
-    <article class="card">
-      <div class="thumb" style="max-height:220px"><img src="${c.img}" alt="${c.brand} ${c.model}" style="width:100%;height:100%;object-fit:cover"></div>
-      <div class="body">
-        <strong>${c.brand} ${c.model}</strong>
-        <span class="muted">${c.year} • ${c.km.toLocaleString('tr-TR')} km • ${c.fuel} • ${c.gear}</span>
-        <span class="price">${formatPrice(c.price)}</span>
-        <p class="muted">${c.desc||''}</p>
-        <div class="actions">
-          <button class="btn btn-primary" onclick="approvePending(${i})">Onayla ve Yayınla</button>
-          <button class="btn btn-outline" onclick="rejectPending(${i})">Sil</button>
+  function renderPending(){
+    const data = getPending();
+    if(!pendingList) return;
+    if(!data.length){ pendingList.innerHTML = '<p class="muted">Onay bekleyen ilan yok.</p>'; return; }
+    pendingList.innerHTML = data.map((c,i)=>`
+      <article class="card">
+        <div class="thumb" style="max-height:220px"><img src="${c.img}" alt="${c.brand} ${c.model}" style="width:100%;height:100%;object-fit:cover"></div>
+        <div class="body">
+          <strong>${c.brand} ${c.model}</strong>
+          <span class="muted">${c.year} • ${c.km.toLocaleString('tr-TR')} km • ${c.fuel} • ${c.gear}</span>
+          <span class="price">${formatPrice(c.price)}</span>
+          <p class="muted">${c.desc||''}</p>
+          <div class="actions">
+            <button class="btn btn-primary" onclick="approvePending(${i})">Onayla ve Yayınla</button>
+            <button class="btn btn-outline" onclick="rejectPending(${i})">Sil</button>
+          </div>
         </div>
-      </div>
-    </article>
-  `).join('');
-}
-window.approvePending = (i)=>{
-  const list = getPending();
-  const c = list[i]; if(!c) return;
-  const newId = (cars.reduce((m,x)=>Math.max(m,x.id),0) || 0) + 1;
-  cars.push({ id:newId, brand:c.brand, model:c.model, year:c.year, km:c.km, price:c.price, fuel:c.fuel, gear:c.gear, img:c.img, desc:c.desc });
-  render(cars);
-  list.splice(i,1); setPending(list); renderPending();
-  alert('İlan yayınlandı!');
-};
-window.rejectPending = (i)=>{
-  const list = getPending(); list.splice(i,1); setPending(list); renderPending();
-};
+      </article>
+    `).join('');
+  }
 
+  if(openAdmin){
+    openAdmin.addEventListener('click', (e)=>{
+      e.preventDefault();
+      const pin = prompt('Admin PIN:');
+      if(pin !== ADMIN_PIN) return alert('Yanlış PIN');
+      renderPending();
+      adminModal.classList.add('active');
+    });
+  }
+  if(adminClose) adminClose.addEventListener('click', ()=> adminModal.classList.remove('active'));
+  if(adminModal) adminModal.addEventListener('click', e=>{ if(e.target===adminModal) adminModal.classList.remove('active'); });
+
+  window.approvePending = (i)=>{
+    const list = getPending(); const c = list[i]; if(!c) return;
+    const newId = (cars.reduce((m,x)=>Math.max(m,x.id),0) || 0) + 1;
+    cars.push({ id:newId, brand:c.brand, model:c.model, year:c.year, km:c.km, price:c.price, fuel:c.fuel, gear:c.gear, img:c.img, desc:c.desc });
+    render(cars);
+    list.splice(i,1); setPending(list); renderPending();
+    alert('İlan yayınlandı!');
+  };
+  window.rejectPending = (i)=>{
+    const list = getPending(); list.splice(i,1); setPending(list); renderPending();
+  };
 </script>
 </body>
 </html>
-
-
-
-
-
