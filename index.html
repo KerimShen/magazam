@@ -14,7 +14,7 @@
     body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;line-height:1.6;color:var(--text);background:linear-gradient(180deg,#0b1022,var(--bg))}
     .container{max-width:1200px;margin:0 auto;padding:16px}
 
-    /* HEADER */
+
     header{position:sticky;top:0;z-index:10;background:rgba(15,23,42,.85);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.06)}
     .topbar{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:14px 0}
     .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.3px}
@@ -23,14 +23,14 @@
     .nav a{text-decoration:none;color:var(--text);opacity:.85;padding:8px 12px;border-radius:10px}
     .nav a:hover{background:rgba(255,255,255,.06);opacity:1}
 
-    /* HERO */
+
     .hero{margin:24px 0 12px;padding:20px;border-radius:var(--radius);background:linear-gradient(135deg,rgba(34,211,238,.12),rgba(167,139,250,.10));border:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow);display:grid;grid-template-columns:1.2fr 1fr;gap:20px;align-items:center}
     .hero h1{margin:0 0 8px;font-size:clamp(22px,4vw,36px)}
     .hero p{margin:0;color:var(--muted)}
     .hero-visual{height:320px;border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;background:#0b1224}
     .hero-visual img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block}
 
-    /* FİLTRE VE KARTLAR */
+
     .filters{margin:12px 0 8px;padding:12px;border-radius:14px;background:rgba(2,6,23,.45);border:1px solid rgba(255,255,255,.08);display:grid;gap:10px}
     .filters .row{display:grid;gap:10px;grid-template-columns:1.2fr repeat(4,1fr) 1fr}
     .filters label{font-size:12px;color:var(--muted)}
@@ -58,7 +58,6 @@
 
     footer{margin:32px 0 12px;padding:24px 0;border-top:1px solid rgba(255,255,255,.08);color:var(--muted)}
 
-    /* MODAL */
     .modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:16px}
     .modal.active{display:flex}
     .modal-card{max-width:860px;width:100%;background:#0b1224;border:1px solid rgba(255,255,255,.10);border-radius:16px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.6)}
@@ -67,11 +66,11 @@
     .modal-body{padding:16px}
     .modal-actions{display:flex;gap:8px;margin-top:10px}
 
-    /* FORM */
+
     .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
     .form-grid input,.form-grid select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.10);background:#0b1224;color:var(--text)}
 
-    /* Mobil */
+
     @media (max-width:640px){
       .form-grid{grid-template-columns:1fr}
       .hero{grid-template-columns:1fr;gap:12px;padding:16px}
@@ -87,7 +86,7 @@
 <header>
   <div class="container topbar">
     <div class="brand">
-      <img src="kerimoto-logo.svg" class="logo-img" alt="KerimOto Logo"/>
+      <img src="arabalar/kerimoto-logo.svg" class="logo-img" alt="KerimOto Logo"/>
       <span>KerimOto</span>
     </div>
     <nav class="nav" aria-label="Ana menü">
@@ -156,7 +155,7 @@
   </footer>
 </main>
 
-<!-- Detay Modalı -->
+
 <div class="modal" id="modal" role="dialog" aria-modal="true" aria-hidden="true">
   <div class="modal-card">
     <div class="modal-top">
@@ -174,7 +173,7 @@
   </div>
 </div>
 
-<!-- İlan Ver (Sat) Modalı -->
+
 <div class="modal" id="sellModal" aria-hidden="true">
   <div class="modal-card">
     <div class="modal-body">
@@ -213,7 +212,7 @@
   </div>
 </div>
 
-<!-- Admin Modal (Onay Bekleyenler) -->
+
 <div class="modal" id="adminModal" aria-hidden="true">
   <div class="modal-card">
     <div class="modal-body">
@@ -227,7 +226,7 @@
 </div>
 
 <script>
-  // İLANLAR
+
   const cars = [
     {id:1, brand:'Mercedes',   model:'CLS350cdi 3.0 V6', year:2011, km:230000, price:2500000, fuel:'Dizel',              gear:'Otomatik', img:'CLS.jpg',            desc:'Stage2 350+HP.'},
     {id:2, brand:'Hyundai',    model:'I30 1.4',          year:2008, km:181000, price:765000,  fuel:'Benzin',            gear:'Manuel',   img:'i30.jpg',            desc:'Hatassız, değişensiz. Ekstra kış lastikleri hediye.'},
@@ -248,7 +247,7 @@
   const yearEl = $('#year');
   const sortEl = $('#sort');
 
-  // Dinamik marka / yıl
+  
   const brands = [...new Set(cars.map(c=>c.brand))].sort();
   brands.forEach(b=>{ const o=document.createElement('option'); o.value=o.textContent=b; brandEl.appendChild(o); });
   const years = [...new Set(cars.map(c=>c.year))].sort((a,b)=>b-a);
@@ -311,7 +310,7 @@
   $('#apply').addEventListener('click', applyFilters);
   $('#reset').addEventListener('click', ()=>{ qEl.value=''; brandEl.value=''; minEl.value=''; maxEl.value=''; yearEl.value=''; sortEl.value='new'; render(cars); });
 
-  // Detay Modal
+
   const modal = $('#modal');
   const mImg = $('#mImg');
   const mTitle = $('#mTitle');
@@ -335,15 +334,14 @@
   }
   function closeModal(){ modal.classList.remove('active'); modal.setAttribute('aria-hidden','true'); }
 
-  // İlk render
+
   render(cars);
 
-  /* ====== Sat & Admin ====== */
   const LS_KEY = 'kerimoto_pending';
   const getPending = () => JSON.parse(localStorage.getItem(LS_KEY) || '[]');
   const setPending = (arr) => localStorage.setItem(LS_KEY, JSON.stringify(arr));
 
-  // SAT modal
+
   const sellModal = document.getElementById('sellModal');
   const openSell  = document.getElementById('openSell');
   const sellClose = document.getElementById('sellClose');
@@ -388,8 +386,8 @@
     });
   }
 
-  // ADMIN modal
-  const ADMIN_PIN   = '2468';
+
+  const ADMIN_PIN   = '8841';
   const adminModal  = document.getElementById('adminModal');
   const adminClose  = document.getElementById('adminClose');
   const openAdmin   = document.getElementById('openAdmin');
@@ -442,3 +440,4 @@
 </script>
 </body>
 </html>
+
