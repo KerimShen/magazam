@@ -79,13 +79,22 @@
       .filters .row{grid-template-columns:1fr;gap:8px}
       .grid{grid-template-columns:1fr}
     }
+    .logo-img{
+  width:36px;
+  height:36px;
+  display:block;
+  border-radius:50%;
+  object-fit:cover;
+}
   </style>
 </head>
 <body>
 <header>
-  <div class="container topbar">
-    <div class="brand"><div class="logo" aria-hidden="true"></div><span>KerimOto</span></div>
-    <nav class="nav" aria-label="Ana menü">
+ <div class="brand">
+  <img src="kerimoto-logo.svg" class="logo-img" alt="KerimOto Logo"/>
+  <span>KerimOto</span>
+</div>
+  <nav class="nav" aria-label="Ana menü">
       <a href="#list">İlanlar</a>
       <a href="#" id="openSell">Sat</a>
       <a href="#" id="openAdmin">Admin</a>
@@ -438,3 +447,4 @@
 </script>
 </body>
 </html>
+
