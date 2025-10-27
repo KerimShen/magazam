@@ -13,25 +13,24 @@
     *{box-sizing:border-box}
     body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;line-height:1.6;color:var(--text);background:linear-gradient(180deg,#0b1022,var(--bg))}
     .container{max-width:1200px;margin:0 auto;padding:16px}
+
+    /* HEADER */
     header{position:sticky;top:0;z-index:10;background:rgba(15,23,42,.85);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.06)}
     .topbar{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:14px 0}
     .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.3px}
-    .logo{width:36px;height:36px;border-radius:50%;background:radial-gradient(circle at 30% 30%,var(--accent),var(--accent2));box-shadow:0 6px 18px rgba(167,139,250,.45)}
-    .nav{display:flex;gap:12px}
+    .logo-img{width:32px;height:32px;border-radius:6px;object-fit:cover;display:block}
+    .nav{display:flex;gap:12px;align-items:center}
     .nav a{text-decoration:none;color:var(--text);opacity:.85;padding:8px 12px;border-radius:10px}
     .nav a:hover{background:rgba(255,255,255,.06);opacity:1}
 
+    /* HERO */
     .hero{margin:24px 0 12px;padding:20px;border-radius:var(--radius);background:linear-gradient(135deg,rgba(34,211,238,.12),rgba(167,139,250,.10));border:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow);display:grid;grid-template-columns:1.2fr 1fr;gap:20px;align-items:center}
     .hero h1{margin:0 0 8px;font-size:clamp(22px,4vw,36px)}
     .hero p{margin:0;color:var(--muted)}
-    .hero-visual{
-      height:320px;border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.08);
-      display:flex;align-items:center;justify-content:center;background:#0b1224;
-    }
-    .hero-visual img{
-      max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;
-    }
+    .hero-visual{height:320px;border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;background:#0b1224}
+    .hero-visual img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block}
 
+    /* FİLTRE VE KARTLAR */
     .filters{margin:12px 0 8px;padding:12px;border-radius:14px;background:rgba(2,6,23,.45);border:1px solid rgba(255,255,255,.08);display:grid;gap:10px}
     .filters .row{display:grid;gap:10px;grid-template-columns:1.2fr repeat(4,1fr) 1fr}
     .filters label{font-size:12px;color:var(--muted)}
@@ -59,7 +58,7 @@
 
     footer{margin:32px 0 12px;padding:24px 0;border-top:1px solid rgba(255,255,255,.08);color:var(--muted)}
 
-    /* Modal */
+    /* MODAL */
     .modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:16px}
     .modal.active{display:flex}
     .modal-card{max-width:860px;width:100%;background:#0b1224;border:1px solid rgba(255,255,255,.10);border-radius:16px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.6)}
@@ -68,9 +67,11 @@
     .modal-body{padding:16px}
     .modal-actions{display:flex;gap:8px;margin-top:10px}
 
+    /* FORM */
     .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
     .form-grid input,.form-grid select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.10);background:#0b1224;color:var(--text)}
 
+    /* Mobil */
     @media (max-width:640px){
       .form-grid{grid-template-columns:1fr}
       .hero{grid-template-columns:1fr;gap:12px;padding:16px}
@@ -79,28 +80,17 @@
       .filters .row{grid-template-columns:1fr;gap:8px}
       .grid{grid-template-columns:1fr}
     }
-    .logo-img{
-  width:32px;
-  height:32px;
-  display:block;
-  border-radius:6px;
-  object-fit:cover;
-}
-    .brand{
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-
   </style>
 </head>
 <body>
+
 <header>
- <div class="brand">
-  <img src="kerimoto-logo.svg" class="logo-img" alt="KerimOto Logo"/>
-  <span>KerimOto</span>
-</div>
-  <nav class="nav" aria-label="Ana menü">
+  <div class="container topbar">
+    <div class="brand">
+      <img src="kerimoto-logo.svg" class="logo-img" alt="KerimOto Logo"/>
+      <span>KerimOto</span>
+    </div>
+    <nav class="nav" aria-label="Ana menü">
       <a href="#list">İlanlar</a>
       <a href="#" id="openSell">Sat</a>
       <a href="#" id="openAdmin">Admin</a>
@@ -212,7 +202,6 @@
 
         <div class="muted" style="margin:8px 0">veya foto yükle:</div>
         <input id="imgFile" type="file" accept="image/*" />
-
         <textarea name="desc" rows="3" placeholder="Açıklama" style="width:100%;margin-top:10px"></textarea>
 
         <div class="actions" style="margin-top:10px">
@@ -259,13 +248,13 @@
   const yearEl = $('#year');
   const sortEl = $('#sort');
 
-  // Dinamik marka ve yıl seçenekleri
+  // Dinamik marka / yıl
   const brands = [...new Set(cars.map(c=>c.brand))].sort();
   brands.forEach(b=>{ const o=document.createElement('option'); o.value=o.textContent=b; brandEl.appendChild(o); });
   const years = [...new Set(cars.map(c=>c.year))].sort((a,b)=>b-a);
   years.forEach(y=>{ const o=document.createElement('option'); o.value=o.textContent=y; yearEl.appendChild(o); });
 
-  function formatPrice(n){return n.toLocaleString('tr-TR',{style:'currency',currency:'TRY',maximumFractionDigits:0});}
+  const formatPrice = n => n.toLocaleString('tr-TR',{style:'currency',currency:'TRY',maximumFractionDigits:0});
   const fuelIcon = f => {
     const t = f.toLowerCase();
     if (t.includes('elektrik') && t.includes('benzin')) return '♻️ ' + f;
@@ -312,7 +301,7 @@
     switch(sortEl.value){
       case 'price-asc': res.sort((a,b)=>a.price-b.price); break;
       case 'price-desc': res.sort((a,b)=>b.price-a.price); break;
-      case 'year-desc': res.sort((a,b)=> b.year - a.year ); break; /* düzeltildi */
+      case 'year-desc': res.sort((a,b)=> b.year - a.year ); break;
       case 'km-asc': res.sort((a,b)=>a.km-b.km); break;
       default: res.sort((a,b)=>b.id-a.id);
     }
@@ -453,5 +442,3 @@
 </script>
 </body>
 </html>
-
-
